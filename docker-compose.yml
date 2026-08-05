@@ -1,0 +1,53 @@
+# PlaceFlow AI — local development orchestration
+#
+# MongoDB is Atlas-hosted (cloud) and is intentionally NOT defined as a service
+# here — both containers reach it over the network via MONGODB_URI. This file
+# only orchestrates the two application containers for a consistent, disposable
+# local dev environment with hot reload.
+
+version: "3.9"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.server
+      target: development
+    container_name: placeflow-server
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./server/.env
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    networks:
+      - placeflow-network
+    restart: unless-stopped
+
+  client:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.client
+      target: development
+    container_name: placeflow-client
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./client/.env
+    environment:
+      - VITE_HOST=0.0.0.0
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    depends_on:
+      - server
+    networks:
+      - placeflow-network
+    restart: unless-stopped
+
+networks:
+  placeflow-network:
+    driver: bridge

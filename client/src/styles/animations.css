@@ -1,0 +1,32 @@
+/**
+ * Global keyframes not expressible through Tailwind's arbitrary values.
+ * Component-local animation is handled by Framer Motion — this file is only
+ * for the handful of CSS-level effects (e.g. skeleton shimmer) that don't
+ * need JS.
+ */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-border) / 0.4) 25%,
+    rgb(var(--color-border) / 0.7) 37%,
+    rgb(var(--color-border) / 0.4) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer {
+    animation: none;
+  }
+}

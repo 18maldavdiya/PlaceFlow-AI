@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "./styles/animations.css";
+
+/**
+ * Design tokens as RGB triplets (not hex) so Tailwind's
+ * `rgb(var(--x) / <alpha-value>)` pattern in tailwind.config.js can apply
+ * opacity modifiers (e.g. `bg-primary/50`) to every token. `.dark` is toggled
+ * on <html> by ThemeContext; `data-theme` mirrors it for non-Tailwind CSS.
+ */
+@layer base {
+  :root {
+    --color-background: 246 247 250;
+    --color-surface: 255 255 255;
+    --color-foreground: 26 34 51;
+    --color-muted: 91 100 120;
+    --color-border: 221 225 234;
+    --color-primary: 47 79 208;
+    --color-primary-foreground: 255 255 255;
+    --color-success: 30 138 90;
+    --color-warning: 184 114 30;
+    --color-danger: 194 59 59;
+  }
+
+  .dark {
+    --color-background: 13 17 28;
+    --color-surface: 20 26 41;
+    --color-foreground: 231 234 242;
+    --color-muted: 154 163 184;
+    --color-border: 38 46 66;
+    --color-primary: 128 152 255;
+    --color-primary-foreground: 13 17 28;
+    --color-success: 95 203 146;
+    --color-warning: 224 168 85;
+    --color-danger: 226 131 123;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  ::selection {
+    @apply bg-primary/20;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+}
