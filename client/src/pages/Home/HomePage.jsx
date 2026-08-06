@@ -14,11 +14,7 @@ import { cn } from "@/utils/cn";
  * marketing/dashboard entry point once feature work begins.
  */
 export function HomePage() {
-  const {
-    data,
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: [QUERY_KEYS.HEALTH],
     queryFn: getServerHealth,
     retry: 0,
@@ -36,8 +32,8 @@ export function HomePage() {
           PlaceFlow AI — project foundation
         </h1>
         <p className="text-sm text-muted">
-          Client scaffold initialized. No business features are implemented
-          yet — this screen only verifies the stack is wired correctly.
+          Client scaffold initialized. No business features are implemented yet
+          — this screen only verifies the stack is wired correctly.
         </p>
       </div>
 
@@ -61,7 +57,11 @@ export function HomePage() {
               <code className="rounded bg-background px-1.5 py-0.5">
                 npm run dev
               </code>{" "}
-              in <code className="rounded bg-background px-1.5 py-0.5">server/</code>.
+              in{" "}
+              <code className="rounded bg-background px-1.5 py-0.5">
+                server/
+              </code>
+              .
             </span>
           </>
         )}

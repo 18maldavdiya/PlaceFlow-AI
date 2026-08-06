@@ -44,4 +44,20 @@ export default [
       "no-console": ["warn", { allow: ["warn", "error"] }],
     },
   },
+  {
+    // Config files run under Node during the build, not in the browser —
+    // they need Node globals (`process`, `__dirname`) instead of window/DOM.
+    files: [
+      "vite.config.js",
+      "tailwind.config.js",
+      "postcss.config.js",
+      "prettier.config.js",
+      "eslint.config.js",
+    ],
+    languageOptions: {
+      ecmaVersion: 2024,
+      sourceType: "module",
+      globals: { ...globals.node },
+    },
+  },
 ];

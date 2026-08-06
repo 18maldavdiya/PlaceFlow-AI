@@ -3,13 +3,11 @@ import http from "node:http";
 import { createApp } from "./src/app.js";
 import { assertRequiredEnv, env } from "./src/config/env.js";
 import { connectDB } from "./src/config/db.js";
-import { initSocket } from "./src/socket/index.js";
 import { logger } from "./src/utils/logger.js";
 
 /**
  * Process entry point. Order matters: validate configuration -> connect the
- * database -> build the Express app -> create the raw HTTP server (Socket.io
- * needs the raw server, not the Express app, to attach to) -> start
+ * database -> build the Express app -> create the raw HTTP server -> start
  * listening. The app never accepts a request before MongoDB is connected.
  */
 async function bootstrap() {
@@ -20,8 +18,6 @@ async function bootstrap() {
 
     const app = createApp();
     const httpServer = http.createServer(app);
-
-    initSocket(httpServer);
 
     httpServer.listen(env.port, () => {
       logger.info(

@@ -18,14 +18,19 @@ const CONNECTION_STATES = {
  * that the process is running.
  */
 export const getHealth = asyncHandler(async (req, res) => {
-  const dbState = CONNECTION_STATES[mongoose.connection.readyState] ?? "unknown";
+  const dbState =
+    CONNECTION_STATES[mongoose.connection.readyState] ?? "unknown";
 
-  new ApiResponse(200, {
-    status: "ok",
-    uptimeSeconds: Math.round(process.uptime()),
-    timestamp: new Date().toISOString(),
-    database: dbState,
-  }, "Service is healthy").send(res);
+  new ApiResponse(
+    200,
+    {
+      status: "ok",
+      uptimeSeconds: Math.round(process.uptime()),
+      timestamp: new Date().toISOString(),
+      database: dbState,
+    },
+    "Service is healthy",
+  ).send(res);
 });
 
 export default { getHealth };

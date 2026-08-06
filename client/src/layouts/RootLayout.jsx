@@ -1,10 +1,10 @@
 import { Moon, Sun, WifiOff } from "lucide-react";
 import { Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Button } from "@/components/common/Button";
-import { useTheme } from "@/context/ThemeContext";
 import { APP_NAME } from "@/constants/app";
+import { toggleTheme } from "@/store/slices/appSlice";
 
 /**
  * Root page shell: header, routed content via <Outlet/>, footer. Every
@@ -13,8 +13,9 @@ import { APP_NAME } from "@/constants/app";
  * rather than replace it, once they exist.
  */
 export function RootLayout() {
-  const { theme, toggleTheme } = useTheme();
+  const theme = useSelector((state) => state.app.theme);
   const isOnline = useSelector((state) => state.app.isOnline);
+  const dispatch = useDispatch();
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -35,7 +36,7 @@ export function RootLayout() {
               type="button"
               variant="ghost"
               size="sm"
-              onClick={toggleTheme}
+              onClick={() => dispatch(toggleTheme())}
               aria-label={
                 theme === "dark"
                   ? "Switch to light theme"
@@ -58,8 +59,7 @@ export function RootLayout() {
 
       <footer className="border-t border-border py-6">
         <div className="container text-xs text-muted">
-          {APP_NAME} — Multi-College Placement &amp; Career Management
-          Platform
+          {APP_NAME} — Multi-College Placement &amp; Career Management Platform
         </div>
       </footer>
     </div>

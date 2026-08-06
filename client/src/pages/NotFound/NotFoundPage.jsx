@@ -15,7 +15,7 @@ export function NotFoundPage() {
       <span className="font-mono text-sm text-muted">404</span>
       <h1 className="text-xl font-semibold tracking-tight">Page not found</h1>
       <p className="text-sm text-muted">
-        The page you're looking for doesn't exist or has moved.
+        The page you&rsquo;re looking for doesn&rsquo;t exist or has moved.
       </p>
       <Button as={Link} to={ROUTES.HOME} variant="secondary" size="sm">
         Back to home

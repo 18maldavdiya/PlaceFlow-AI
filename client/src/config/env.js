@@ -10,7 +10,6 @@
 const required = (key, value) => {
   if (value === undefined || value === "") {
     if (import.meta.env.DEV) {
-      // eslint-disable-next-line no-console
       console.warn(
         `[env] Missing required environment variable "${key}". Falling back to an empty string — set it in client/.env.`,
       );
@@ -21,14 +20,10 @@ const required = (key, value) => {
 };
 
 export const env = Object.freeze({
-  apiBaseUrl: required(
-    "VITE_API_BASE_URL",
-    import.meta.env.VITE_API_BASE_URL,
-  ),
+  apiBaseUrl: required("VITE_API_BASE_URL", import.meta.env.VITE_API_BASE_URL),
   socketUrl: required("VITE_SOCKET_URL", import.meta.env.VITE_SOCKET_URL),
   cloudinaryCloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME ?? "",
-  cloudinaryUploadPreset:
-    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET ?? "",
+  cloudinaryUploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET ?? "",
   appName: import.meta.env.VITE_APP_NAME ?? "PlaceFlow AI",
   appEnv: import.meta.env.VITE_APP_ENV ?? import.meta.env.MODE,
   isDev: import.meta.env.DEV,
