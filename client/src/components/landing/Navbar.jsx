@@ -5,24 +5,19 @@ import {
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
-import { Menu, Moon, Sun, WifiOff, X } from "lucide-react";
+import { LayoutDashboard, Menu, Moon, Sun, WifiOff, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 import { Button } from "@/components/common/Button";
 import { APP_NAME } from "@/constants/app";
 import { NAV_LINKS } from "@/constants/landing";
+import { ROUTES } from "@/constants/routes";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { toggleTheme } from "@/store/slices/appSlice";
 import { cn } from "@/utils/cn";
 
 const SECTION_IDS = NAV_LINKS.map((link) => link.href.replace("#", ""));
-
-function notComingYet() {
-  toast("That page isn't built yet — the landing page comes first.", {
-    icon: "🚧",
-  });
-}
 
 /**
  * Sticky, glassmorphic site header. Scroll-spies the page's section ids to
@@ -34,6 +29,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const theme = useSelector((state) => state.app.theme);
   const isOnline = useSelector((state) => state.app.isOnline);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
   const activeId = useScrollSpy(SECTION_IDS);
   const { scrollY } = useScroll();
@@ -41,6 +37,16 @@ export function Navbar() {
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 16);
   });
+
+  const logoContent = (
+    <>
+      <img src="/favicon.svg" alt="" className="h-8 w-8 rounded-lg" />
+      <span className="text-lg font-semibold tracking-tight">
+        {APP_NAME.replace(/\s*AI$/, "")}
+        <span className="gradient-text"> AI</span>
+      </span>
+    </>
+  );
 
   return (
     <header
@@ -52,17 +58,23 @@ export function Navbar() {
       )}
     >
       <div className="container flex h-16 items-center justify-between md:h-20">
-        <a
-          href="#hero"
-          className="flex items-center gap-2.5"
-          onClick={() => setMobileOpen(false)}
-        >
-          <img src="/favicon.svg" alt="" className="h-8 w-8 rounded-lg" />
-          <span className="text-lg font-semibold tracking-tight">
-            {APP_NAME.replace(/\s*AI$/, "")}
-            <span className="gradient-text"> AI</span>
-          </span>
-        </a>
+        {isAuthenticated ? (
+          <Link
+            to={ROUTES.STUDENT_DASHBOARD}
+            className="flex items-center gap-2.5"
+            onClick={() => setMobileOpen(false)}
+          >
+            {logoContent}
+          </Link>
+        ) : (
+          <a
+            href="#hero"
+            className="flex items-center gap-2.5"
+            onClick={() => setMobileOpen(false)}
+          >
+            {logoContent}
+          </a>
+        )}
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
           {NAV_LINKS.map((link) => {
@@ -116,12 +128,31 @@ export function Navbar() {
               <Moon className="h-4 w-4" aria-hidden />
             )}
           </Button>
-          <Button variant="ghost" size="sm" onClick={notComingYet}>
-            Log in
-          </Button>
-          <Button variant="gradient" size="sm" onClick={notComingYet}>
-            Register
-          </Button>
+          {isAuthenticated ? (
+            <Button
+              as={Link}
+              to={ROUTES.STUDENT_DASHBOARD}
+              variant="gradient"
+              size="sm"
+            >
+              <LayoutDashboard className="h-4 w-4" aria-hidden />
+              Dashboard
+            </Button>
+          ) : (
+            <>
+              <Button as={Link} to={ROUTES.LOGIN} variant="ghost" size="sm">
+                Log in
+              </Button>
+              <Button
+                as={Link}
+                to={ROUTES.REGISTER}
+                variant="gradient"
+                size="sm"
+              >
+                Register
+              </Button>
+            </>
+          )}
         </div>
 
         <button
@@ -178,22 +209,42 @@ export function Navbar() {
                     <Moon className="h-4 w-4" aria-hidden />
                   )}
                 </Button>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="flex-1"
-                  onClick={notComingYet}
-                >
-                  Log in
-                </Button>
-                <Button
-                  variant="gradient"
-                  size="sm"
-                  className="flex-1"
-                  onClick={notComingYet}
-                >
-                  Register
-                </Button>
+                {isAuthenticated ? (
+                  <Button
+                    as={Link}
+                    to={ROUTES.STUDENT_DASHBOARD}
+                    variant="gradient"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <LayoutDashboard className="h-4 w-4" aria-hidden />
+                    Dashboard
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      as={Link}
+                      to={ROUTES.LOGIN}
+                      variant="secondary"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Log in
+                    </Button>
+                    <Button
+                      as={Link}
+                      to={ROUTES.REGISTER}
+                      variant="gradient"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Register
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </motion.nav>

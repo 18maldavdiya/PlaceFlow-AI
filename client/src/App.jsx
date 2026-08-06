@@ -1,12 +1,17 @@
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Provider as ReduxProvider, useSelector } from "react-redux";
+import {
+  Provider as ReduxProvider,
+  useDispatch,
+  useSelector,
+} from "react-redux";
 import { Toaster } from "react-hot-toast";
 
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { AppRouter } from "@/routes/AppRouter";
 import { store } from "@/store";
+import { fetchCurrentUser } from "@/store/slices/authSlice";
 
 // Single TanStack Query client for the app. Server state (anything fetched
 // from the API) is owned here, not mirrored into Redux.
@@ -26,6 +31,19 @@ const queryClient = new QueryClient({
 
 function OnlineStatusWatcher() {
   useOnlineStatus();
+  return null;
+}
+
+// Rehydrates the auth session from the httpOnly cookie on first load — the
+// only place `fetchCurrentUser` is dispatched. Nothing reads/writes
+// localStorage for this; a valid cookie is what GET /auth/me checks.
+function AuthSessionBootstrap() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchCurrentUser());
+  }, [dispatch]);
+
   return null;
 }
 
@@ -55,6 +73,7 @@ export function App() {
       <QueryClientProvider client={queryClient}>
         <ThemeEffect />
         <OnlineStatusWatcher />
+        <AuthSessionBootstrap />
         <AppRouter />
         <Toaster
           position="top-right"

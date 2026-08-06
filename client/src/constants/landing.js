@@ -8,6 +8,7 @@ import {
   GraduationCap,
   Instagram,
   Landmark,
+  LayoutDashboard,
   Linkedin,
   Mail,
   Map,
@@ -37,15 +38,34 @@ export const NAV_LINKS = Object.freeze([
 ]);
 
 export const STATS = Object.freeze([
-  { icon: Building2, value: 100, suffix: "+", label: "Colleges onboard" },
+  {
+    icon: Building2,
+    value: 100,
+    suffix: "+",
+    label: "Partner Colleges",
+    description: "Placement cells running on PlaceFlow AI",
+  },
   {
     icon: GraduationCap,
     value: 25000,
     suffix: "+",
-    label: "Students placed on",
+    label: "Students",
+    description: "Building profiles and applying every season",
   },
-  { icon: Briefcase, value: 500, suffix: "+", label: "Recruiters hiring" },
-  { icon: Trophy, value: 10000, suffix: "+", label: "Successful placements" },
+  {
+    icon: Briefcase,
+    value: 500,
+    suffix: "+",
+    label: "Recruiters",
+    description: "Hiring across every partner campus",
+  },
+  {
+    icon: Trophy,
+    value: 10000,
+    suffix: "+",
+    label: "Placements",
+    description: "Offers accepted through the platform",
+  },
 ]);
 
 export const FEATURES = Object.freeze([
@@ -63,9 +83,9 @@ export const FEATURES = Object.freeze([
   },
   {
     icon: Gauge,
-    title: "Placement Readiness Score",
+    title: "Resume Health Score",
     description:
-      "A single, honest score across academics, skills, and profile completeness — so you know exactly what's holding an application back.",
+      "A single, honest score across formatting, keywords, and completeness — so you know exactly what's holding your resume back.",
   },
   {
     icon: Sparkles,
@@ -90,6 +110,12 @@ export const FEATURES = Object.freeze([
     title: "Application Tracking",
     description:
       "Every application, interview, and offer in one live timeline — no more refreshing your inbox to know where things stand.",
+  },
+  {
+    icon: LayoutDashboard,
+    title: "Analytics Dashboard",
+    description:
+      "A live view of every drive, application, and offer — for students tracking their own season and TPOs tracking everyone else's.",
   },
 ]);
 

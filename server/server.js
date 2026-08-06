@@ -4,6 +4,7 @@ import { createApp } from "./src/app.js";
 import { assertRequiredEnv, env } from "./src/config/env.js";
 import { connectDB } from "./src/config/db.js";
 import { logger } from "./src/utils/logger.js";
+import { seedJobsIfEmpty } from "./src/utils/seedJobs.js";
 
 /**
  * Process entry point. Order matters: validate configuration -> connect the
@@ -15,6 +16,7 @@ async function bootstrap() {
     assertRequiredEnv();
 
     await connectDB();
+    await seedJobsIfEmpty();
 
     const app = createApp();
     const httpServer = http.createServer(app);
