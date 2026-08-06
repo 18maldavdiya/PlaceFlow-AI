@@ -30,3 +30,22 @@
     animation: none;
   }
 }
+
+/* Used by components/common/Button.jsx's ripple effect on pointer-down. */
+@keyframes ripple {
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+.animate-ripple {
+  animation: ripple 600ms ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ripple {
+    animation: none;
+    display: none;
+  }
+}

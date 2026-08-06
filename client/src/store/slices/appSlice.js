@@ -3,12 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 import { LOCAL_STORAGE_KEYS } from "@/constants/app";
 
 function getInitialTheme() {
-  if (typeof window === "undefined") return "light";
+  // PlaceFlow AI ships dark mode by default — an explicit stored preference
+  // (from the navbar toggle) always wins, but a first-time visitor with no
+  // preference yet lands in dark, regardless of OS setting.
+  if (typeof window === "undefined") return "dark";
   const stored = window.localStorage.getItem(LOCAL_STORAGE_KEYS.THEME);
   if (stored === "light" || stored === "dark") return stored;
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  return "dark";
 }
 
 const initialState = {

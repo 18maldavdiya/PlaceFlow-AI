@@ -1,67 +1,23 @@
-import { Moon, Sun, WifiOff } from "lucide-react";
 import { Outlet } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
-import { Button } from "@/components/common/Button";
-import { APP_NAME } from "@/constants/app";
-import { toggleTheme } from "@/store/slices/appSlice";
+import { Footer } from "@/components/landing/Footer";
+import { Navbar } from "@/components/landing/Navbar";
 
 /**
- * Root page shell: header, routed content via <Outlet/>, footer. Every
- * route rendered through routes/AppRouter.jsx mounts inside this layout.
- * Feature-specific layouts (e.g. a dashboard sidebar) will wrap this one
- * rather than replace it, once they exist.
+ * Root page shell: sticky navbar, routed content via <Outlet/>, footer.
+ * Every route rendered through routes/AppRouter.jsx mounts inside this
+ * layout. Sections control their own width/background (the landing page is
+ * full-bleed with alternating section backgrounds), so `main` carries no
+ * container padding of its own.
  */
 export function RootLayout() {
-  const theme = useSelector((state) => state.app.theme);
-  const isOnline = useSelector((state) => state.app.isOnline);
-  const dispatch = useDispatch();
-
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <header className="border-b border-border">
-        <div className="container flex h-16 items-center justify-between">
-          <span className="text-base font-semibold tracking-tight">
-            {APP_NAME}
-          </span>
-
-          <div className="flex items-center gap-3">
-            {!isOnline && (
-              <span className="flex items-center gap-1.5 text-xs text-warning">
-                <WifiOff className="h-4 w-4" aria-hidden />
-                Offline
-              </span>
-            )}
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => dispatch(toggleTheme())}
-              aria-label={
-                theme === "dark"
-                  ? "Switch to light theme"
-                  : "Switch to dark theme"
-              }
-            >
-              {theme === "dark" ? (
-                <Sun className="h-4 w-4" aria-hidden />
-              ) : (
-                <Moon className="h-4 w-4" aria-hidden />
-              )}
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      <main className="container flex-1 py-10">
+      <Navbar />
+      <main className="flex-1">
         <Outlet />
       </main>
-
-      <footer className="border-t border-border py-6">
-        <div className="container text-xs text-muted">
-          {APP_NAME} — Multi-College Placement &amp; Career Management Platform
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

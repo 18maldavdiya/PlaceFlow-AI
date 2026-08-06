@@ -8,7 +8,7 @@
  * Design tokens as RGB triplets (not hex) so Tailwind's
  * `rgb(var(--x) / <alpha-value>)` pattern in tailwind.config.js can apply
  * opacity modifiers (e.g. `bg-primary/50`) to every token. `.dark` is toggled
- * on <html> by ThemeContext; `data-theme` mirrors it for non-Tailwind CSS.
+ * on <html> by App.jsx's ThemeEffect; `data-theme` mirrors it for non-Tailwind CSS.
  */
 @layer base {
   :root {
@@ -22,6 +22,16 @@
     --color-success: 30 138 90;
     --color-warning: 184 114 30;
     --color-danger: 194 59 59;
+
+    /* Brand gradient — used by .gradient-text and the decorative mesh
+       backgrounds behind the hero and section CTAs. Kept identical across
+       themes, same reasoning as most product brand gradients. */
+    --gradient-brand: linear-gradient(
+      135deg,
+      #6366f1 0%,
+      #8b5cf6 50%,
+      #ec4899 100%
+    );
   }
 
   .dark {
@@ -43,6 +53,10 @@
 
   html {
     color-scheme: light;
+    scroll-behavior: smooth;
+    /* Offsets in-page anchor jumps (nav links) so headings don't land
+       underneath the sticky navbar. Matches the navbar's h-16/h-20 height. */
+    scroll-padding-top: 5rem;
   }
 
   html.dark {
@@ -59,5 +73,32 @@
 
   :focus-visible {
     @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+}
+
+@layer utilities {
+  /* Gradient-filled headline text. Usage: <span className="gradient-text"> */
+  .gradient-text {
+    background-image: var(--gradient-brand);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Frosted-glass surface — sticky navbar, floating preview cards. */
+  .glass {
+    background-color: rgb(var(--color-surface) / 0.72);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+  }
+
+  /* Faint dot grid used behind the hero and closing CTA sections. */
+  .bg-grid {
+    background-image: radial-gradient(
+      rgb(var(--color-foreground) / 0.14) 1px,
+      transparent 1px
+    );
+    background-size: 28px 28px;
   }
 }
