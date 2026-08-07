@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 import { PUBLIC_REGISTRATION_ROLES } from "@/constants/app";
+import {
+  INTERNSHIP_TYPE_OPTIONS,
+  SKILL_CATEGORY_OPTIONS,
+} from "@/constants/profile";
 
 /**
  * Zod schemas for the authentication forms and the Student Profile forms.
@@ -128,3 +132,118 @@ export const academicInfoSchema = z.object({
   enrollmentNumber: z.string().trim().max(50).optional().or(z.literal("")),
   studentId: z.string().trim().max(50).optional().or(z.literal("")),
 });
+
+// ---------- Student Skills / Projects / Experience / Certificates (Phase 5.2B) ----------
+
+const SKILL_CATEGORY_VALUES = SKILL_CATEGORY_OPTIONS.map(
+  (option) => option.value,
+);
+const INTERNSHIP_TYPE_VALUES = INTERNSHIP_TYPE_OPTIONS.map(
+  (option) => option.value,
+);
+
+const urlField = z
+  .string()
+  .trim()
+  .url("Enter a valid URL")
+  .optional()
+  .or(z.literal(""));
+
+export const skillSchema = z.object({
+  category: z.enum(SKILL_CATEGORY_VALUES, {
+    errorMap: () => ({ message: "Select a valid skill category" }),
+  }),
+  name: z.string().trim().min(1, "Skill name is required").max(60),
+});
+
+/**
+ * Shared by Projects and Experience — both have identical start/end/current
+ * rules ("Current Project" and "Current" role work the same way), mirroring
+ * validateDateRange() in server/src/validators/profile.validator.js.
+ */
+function withDateRangeRules(schema) {
+  return schema.superRefine((data, ctx) => {
+    if (!data.startDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Start date is required",
+        path: ["startDate"],
+      });
+      return;
+    }
+    if (data.isCurrent) return;
+
+    if (!data.endDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Provide an end date, or mark this as current",
+        path: ["endDate"],
+      });
+      return;
+    }
+    if (new Date(data.endDate) < new Date(data.startDate)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "End date cannot be before the start date",
+        path: ["endDate"],
+      });
+    }
+  });
+}
+
+export const projectSchema = withDateRangeRules(
+  z.object({
+    title: z.string().trim().min(2, "Project title is required"),
+    description: z.string().trim().max(1000).optional().or(z.literal("")),
+    // Comma-separated in the form; split into an array right before submit.
+    technologies: z.string().trim().optional().or(z.literal("")),
+    githubUrl: urlField,
+    liveUrl: urlField,
+    startDate: z.string().optional().or(z.literal("")),
+    endDate: z.string().optional().or(z.literal("")),
+    isCurrent: z.boolean().default(false),
+  }),
+);
+
+export const experienceSchema = withDateRangeRules(
+  z.object({
+    company: z.string().trim().min(2, "Company is required"),
+    role: z.string().trim().min(2, "Role is required"),
+    location: z.string().trim().max(100).optional().or(z.literal("")),
+    internshipType: z.enum(INTERNSHIP_TYPE_VALUES, {
+      errorMap: () => ({ message: "Select a valid internship type" }),
+    }),
+    startDate: z.string().optional().or(z.literal("")),
+    endDate: z.string().optional().or(z.literal("")),
+    isCurrent: z.boolean().default(false),
+    description: z.string().trim().max(1000).optional().or(z.literal("")),
+  }),
+);
+
+export const certificateSchema = z
+  .object({
+    name: z.string().trim().min(2, "Certificate name is required"),
+    issuer: z.string().trim().min(2, "Issuer is required"),
+    issueDate: z.string().min(1, "Issue date is required"),
+    expiryDate: z.string().optional().or(z.literal("")),
+    credentialId: z.string().trim().max(100).optional().or(z.literal("")),
+    certificateUrl: urlField,
+  })
+  .superRefine((data, ctx) => {
+    if (!data.issueDate) return;
+    const issueDate = new Date(data.issueDate);
+    if (issueDate > new Date()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Issue date cannot be in the future",
+        path: ["issueDate"],
+      });
+    }
+    if (data.expiryDate && new Date(data.expiryDate) < issueDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Expiry date cannot be before the issue date",
+        path: ["expiryDate"],
+      });
+    }
+  });

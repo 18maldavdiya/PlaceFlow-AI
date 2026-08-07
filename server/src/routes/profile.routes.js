@@ -6,7 +6,13 @@ import { UPLOADS_DIR, profileImageUpload } from "../config/multer.js";
 import { protect } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/role.middleware.js";
 import { ApiError } from "../utils/ApiError.js";
-import { validateUpdateProfileInput } from "../validators/profile.validator.js";
+import {
+  validateCertificateInput,
+  validateExperienceInput,
+  validateProjectInput,
+  validateSkillInput,
+  validateUpdateProfileInput,
+} from "../validators/profile.validator.js";
 
 const router = Router();
 
@@ -45,5 +51,48 @@ function handleProfileImageUpload(req, res, next) {
 }
 
 router.post("/image", handleProfileImageUpload, profileController.uploadProfileImage);
+
+// ---------- Phase 5.2B: Skills / Projects / Experience / Certificates ----------
+// All embedded in the same StudentProfile document (see
+// models/studentProfile.model.js) — no new collections, no new middleware.
+
+router.post("/skills", validateSkillInput, profileController.addSkill);
+router.put("/skills/:skillId", validateSkillInput, profileController.updateSkill);
+router.delete("/skills/:skillId", profileController.deleteSkill);
+
+router.post("/projects", validateProjectInput, profileController.addProject);
+router.put(
+  "/projects/:projectId",
+  validateProjectInput,
+  profileController.updateProject,
+);
+router.delete("/projects/:projectId", profileController.deleteProject);
+
+router.post(
+  "/experience",
+  validateExperienceInput,
+  profileController.addExperience,
+);
+router.put(
+  "/experience/:experienceId",
+  validateExperienceInput,
+  profileController.updateExperience,
+);
+router.delete("/experience/:experienceId", profileController.deleteExperience);
+
+router.post(
+  "/certificates",
+  validateCertificateInput,
+  profileController.addCertificate,
+);
+router.put(
+  "/certificates/:certificateId",
+  validateCertificateInput,
+  profileController.updateCertificate,
+);
+router.delete(
+  "/certificates/:certificateId",
+  profileController.deleteCertificate,
+);
 
 export default router;

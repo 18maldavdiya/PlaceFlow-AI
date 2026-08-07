@@ -39,4 +39,82 @@ export async function uploadProfileImage(file) {
   return response.data.data;
 }
 
-export default { getProfile, updateProfile, uploadProfileImage };
+// ---------- Phase 5.2B: Skills / Projects / Experience / Certificates ----------
+// Every call below returns the full, re-serialized profile (same shape as
+// getProfile()) so the caller can just replace its cached copy wholesale.
+
+export async function addSkill(payload) {
+  const response = await api.post("/profile/skills", payload);
+  return response.data.data;
+}
+export async function updateSkill(skillId, payload) {
+  const response = await api.put(`/profile/skills/${skillId}`, payload);
+  return response.data.data;
+}
+export async function deleteSkill(skillId) {
+  const response = await api.delete(`/profile/skills/${skillId}`);
+  return response.data.data;
+}
+
+export async function addProject(payload) {
+  const response = await api.post("/profile/projects", payload);
+  return response.data.data;
+}
+export async function updateProject(projectId, payload) {
+  const response = await api.put(`/profile/projects/${projectId}`, payload);
+  return response.data.data;
+}
+export async function deleteProject(projectId) {
+  const response = await api.delete(`/profile/projects/${projectId}`);
+  return response.data.data;
+}
+
+export async function addExperience(payload) {
+  const response = await api.post("/profile/experience", payload);
+  return response.data.data;
+}
+export async function updateExperience(experienceId, payload) {
+  const response = await api.put(
+    `/profile/experience/${experienceId}`,
+    payload,
+  );
+  return response.data.data;
+}
+export async function deleteExperience(experienceId) {
+  const response = await api.delete(`/profile/experience/${experienceId}`);
+  return response.data.data;
+}
+
+export async function addCertificate(payload) {
+  const response = await api.post("/profile/certificates", payload);
+  return response.data.data;
+}
+export async function updateCertificate(certificateId, payload) {
+  const response = await api.put(
+    `/profile/certificates/${certificateId}`,
+    payload,
+  );
+  return response.data.data;
+}
+export async function deleteCertificate(certificateId) {
+  const response = await api.delete(`/profile/certificates/${certificateId}`);
+  return response.data.data;
+}
+
+export default {
+  getProfile,
+  updateProfile,
+  uploadProfileImage,
+  addSkill,
+  updateSkill,
+  deleteSkill,
+  addProject,
+  updateProject,
+  deleteProject,
+  addExperience,
+  updateExperience,
+  deleteExperience,
+  addCertificate,
+  updateCertificate,
+  deleteCertificate,
+};
